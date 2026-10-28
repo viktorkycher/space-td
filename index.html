@@ -14,7 +14,6 @@ html,body{height:100%;overflow:hidden;background:#060914;font-family:-apple-syst
 .screen{position:absolute;inset:0;display:none;flex-direction:column;}
 .screen.active{display:flex;}
 
-/* ---------- MENU ---------- */
 #menu{
   align-items:center;justify-content:center;gap:18px;
   background:
@@ -54,7 +53,6 @@ html,body{height:100%;overflow:hidden;background:#060914;font-family:-apple-syst
   background:#ff5c8a;color:#fff;border-radius:10px;padding:1px 8px;font-size:13px;font-weight:800;
 }
 
-/* ---------- BATTLE ---------- */
 #battle{background:#04060f;}
 .topbar{
   display:flex;align-items:center;gap:10px;padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));
@@ -75,7 +73,6 @@ html,body{height:100%;overflow:hidden;background:#060914;font-family:-apple-syst
 }
 .bottombar .row{display:flex;gap:10px;align-items:center;}
 
-/* pickers */
 .picker{
   position:absolute;left:0;right:0;bottom:0;
   padding:12px 12px calc(12px + env(safe-area-inset-bottom));
@@ -102,7 +99,6 @@ html,body{height:100%;overflow:hidden;background:#060914;font-family:-apple-syst
 }
 .infoText{flex:2;font-size:12px;color:#9fb6dd;line-height:1.4;padding:0 6px;}
 
-/* ---------- OVERLAYS ---------- */
 .overlay{
   position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:14px;padding:26px;text-align:center;
@@ -114,7 +110,6 @@ html,body{height:100%;overflow:hidden;background:#060914;font-family:-apple-syst
 .resultTitle.lose{color:#ff5c8a;text-shadow:0 0 28px rgba(255,92,138,.6);}
 .resultLine{font-size:16px;color:#b8c9e6;}
 
-/* ---------- SUB SCREENS ---------- */
 #chests,#collection{background:radial-gradient(circle at 50% 0%, rgba(60,40,160,.3), transparent 60%),#060914;}
 .screenHead{
   display:flex;align-items:center;gap:12px;padding:14px 16px;
@@ -159,7 +154,6 @@ html,body{height:100%;overflow:hidden;background:#060914;font-family:-apple-syst
 }
 .upBtn:disabled{background:#243352;color:#5c6f8f;}
 
-/* chest opening */
 .bigChest{font-size:110px;filter:drop-shadow(0 0 40px var(--c));cursor:pointer;}
 .bigChest.shake{animation:shake .42s infinite;}
 @keyframes shake{
@@ -181,7 +175,6 @@ html,body{height:100%;overflow:hidden;background:#060914;font-family:-apple-syst
 <body>
 <div id="app">
 
-  <!-- ===== MENU ===== -->
   <div id="menu" class="screen active">
     <h1 class="gameTitle">КОСМИЧЕСКАЯ<br>ОБОРОНА</h1>
     <div class="menuStats">
@@ -195,7 +188,6 @@ html,body{height:100%;overflow:hidden;background:#060914;font-family:-apple-syst
     </div>
   </div>
 
-  <!-- ===== BATTLE ===== -->
   <div id="battle" class="screen">
     <div class="topbar">
       <div class="hud">❤️ <span id="hudLives">10</span></div>
@@ -215,26 +207,21 @@ html,body{height:100%;overflow:hidden;background:#060914;font-family:-apple-syst
     <div id="battleResult" class="overlay hidden"></div>
   </div>
 
-  <!-- ===== CHESTS ===== -->
   <div id="chests" class="screen">
     <div class="screenHead"><button class="backBtn" data-back>←</button><h2>СУНДУКИ</h2><div class="spacer"></div></div>
     <div id="chestList" class="scrollArea"></div>
   </div>
 
-  <!-- ===== COLLECTION ===== -->
   <div id="collection" class="screen">
     <div class="screenHead"><button class="backBtn" data-back>←</button><h2>БАШНИ</h2><div class="spacer"></div></div>
     <div id="collectionList" class="scrollArea"></div>
   </div>
 
-  <!-- ===== CHEST MODAL ===== -->
   <div id="chestModal" class="overlay hidden"></div>
 </div>
 
 <script>
-/* =========================================================
-   СОХРАНЕНИЕ
-   ========================================================= */
+/* ============ СОХРАНЕНИЕ ============ */
 const SAVE_KEY = 'spaceTD_v1';
 const MAX_LEVEL = 8;
 const TOTAL_WAVES = 5;
@@ -254,9 +241,7 @@ catch(e){ state = defaultState(); }
 if(!state.towers) state = defaultState();
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }catch(e){} }
 
-/* =========================================================
-   БАШНИ
-   ========================================================= */
+/* ============ БАШНИ ============ */
 const TOWERS = {
   blaster:{ name:'Бластер', cost:50,  color:'#5ee7ff', dmg:10, range:95,  rate:0.50, splash:0,  projSpeed:430, kind:'bolt' },
   plasma: { name:'Плазма',  cost:85,  color:'#ff6ee7', dmg:20, range:88,  rate:1.25, splash:45, projSpeed:270, kind:'orb'  },
@@ -276,9 +261,7 @@ function towerStats(key){
   };
 }
 
-/* =========================================================
-   СУНДУКИ
-   ========================================================= */
+/* ============ СУНДУКИ ============ */
 const CHEST_DEF = {
   common:    { name:'Обычный',    color:'#7ec8ff', cards:4,  coins:70  },
   rare:      { name:'Редкий',     color:'#4de1a0', cards:9,  coins:180 },
@@ -293,9 +276,7 @@ function rollChest(lvl){
   return 'common';
 }
 
-/* =========================================================
-   КАРТА / ПУТЬ
-   ========================================================= */
+/* ============ КАРТА ============ */
 const CELL = 40, COLS = 10, ROWS = 16;
 const W = COLS * CELL, H = ROWS * CELL;
 
@@ -338,9 +319,7 @@ function isBuildable(c,r){
   return c>=0 && c<COLS && r>=0 && r<ROWS && !pathCells.has(c+','+r);
 }
 
-/* =========================================================
-   CANVAS
-   ========================================================= */
+/* ============ CANVAS ============ */
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -358,9 +337,7 @@ for(let i=0;i<90;i++){
   });
 }
 
-/* =========================================================
-   ЭКРАНЫ
-   ========================================================= */
+/* ============ ЭКРАНЫ ============ */
 const screens = ['menu','battle','chests','collection'];
 function showScreen(id){
   screens.forEach(s => document.getElementById(s).classList.toggle('active', s === id));
@@ -376,9 +353,7 @@ document.getElementById('chestsBtn').onclick = () => { renderChests(); showScree
 document.getElementById('collectionBtn').onclick = () => { renderCollection(); showScreen('collection'); };
 document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { refreshMenu(); showScreen('menu'); });
 
-/* =========================================================
-   БОЙ
-   ========================================================= */
+/* ============ БОЙ ============ */
 let battle = null;
 let lastTime = 0;
 
@@ -393,6 +368,10 @@ function startBattle(){
     towers: [],
     projectiles: [],
     effects: [],
+    particles: [],
+    shake: 0,
+    shakeX: 0,
+    shakeY: 0,
     spawnQueue: [],
     pendingCell: null,
     selectedTower: null
@@ -484,32 +463,65 @@ window.closeBattle = function(){
   showScreen('menu');
 };
 
-/* =========================================================
-   ЛОГИКА БОЯ
-   ========================================================= */
+/* ============ ЛОГИКА ============ */
+function spawnParticles(x, y, count, color, opts = {}){
+  if(!battle) return;
+  for(let i = 0; i < count; i++){
+    const ang = Math.random() * Math.PI * 2;
+    const speed = (opts.speed || 80) * (0.4 + Math.random() * 0.9);
+    battle.particles.push({
+      x, y,
+      vx: Math.cos(ang) * speed,
+      vy: Math.sin(ang) * speed - (opts.lift || 0),
+      life: (opts.life || 0.45) * (0.6 + Math.random() * 0.7),
+      maxLife: opts.life || 0.45,
+      size: (opts.size || 2.5) * (0.6 + Math.random() * 0.9),
+      color: opts.colors ? opts.colors[Math.floor(Math.random() * opts.colors.length)] : color,
+      gravity: opts.gravity || 0,
+      glow: opts.glow !== false
+    });
+  }
+}
+
+function addShake(amount){
+  if(!battle) return;
+  battle.shake = Math.min(1.2, battle.shake + amount);
+}
+
 function damageEnemy(e, dmg){
   if(e.hp <= 0) return;
   e.hp -= dmg;
+  spawnParticles(e.px, e.py, 3, e.color, { speed: 60, life: 0.25, size: 2 });
   if(e.hp <= 0){
     e.hp = 0;
     const reward = Math.max(5, Math.round(e.maxHp / 6));
     state.coins += reward;
     battle.earned += reward;
     battle.effects.push({ type:'boom', x:e.px, y:e.py, r:20, life:0.26, max:0.26, color:e.color });
+    spawnParticles(e.px, e.py, 14, e.color, { speed: 120, life: 0.55, size: 2.8 });
+    spawnParticles(e.px, e.py, 6, '#ffffff', { speed: 80, life: 0.35, size: 2 });
+    addShake(0.15);
     updateHUD();
   }
 }
 
 function fire(t, target, st){
+  t.recoil = 1;
+  const mx = t.x + Math.cos(t.angle || 0) * 16;
+  const my = t.y + Math.sin(t.angle || 0) * 16;
+  spawnParticles(mx, my, 3, TOWERS[t.key].color, { speed: 70, life: 0.18, size: 2.2 });
+
   if(t.key === 'laser'){
     damageEnemy(target, st.dmg);
     battle.effects.push({ type:'beam', x1:t.x, y1:t.y, x2:target.px, y2:target.py, life:0.1, max:0.1, color:'#ffd257' });
+    spawnParticles(target.px, target.py, 2, '#ffd257', { speed: 40, life: 0.15, size: 2 });
   } else {
     const def = TOWERS[t.key];
     battle.projectiles.push({
       x:t.x, y:t.y, target, dmg:st.dmg, splash:st.splash,
       speed:def.projSpeed, color:def.color, kind:def.kind,
-      tx:target.px, ty:target.py
+      tx:target.px, ty:target.py,
+      trail: []
     });
   }
 }
@@ -519,27 +531,29 @@ function update(dt){
   if(battle.state === 'won' || battle.state === 'lost') return;
   battle.time += dt;
 
-  // --- спавн ---
   while(battle.spawnQueue.length && battle.spawnQueue[0].t <= battle.time){
     const s = battle.spawnQueue.shift();
     battle.enemies.push({
       d:0, hp:s.hp, maxHp:s.hp, speed:s.speed, type:s.type, slow:0,
       px:WP[0].x, py:WP[0].y,
-      color: s.type === 'tank' ? '#ff5c8a' : s.type === 'fast' ? '#7dff9b' : '#8b7bff'
+      color: s.type === 'tank' ? '#ff5c8a' : s.type === 'fast' ? '#7dff9b' : '#8b7bff',
+      spawnAnim: 1
     });
   }
 
-  // --- враги ---
-  for(let i=battle.enemies.length-1;i>=0;i--){
+  for(let i = battle.enemies.length - 1; i >= 0; i--){
     const e = battle.enemies[i];
-    if(e.hp <= 0){ battle.enemies.splice(i,1); continue; }
+    if(e.hp <= 0){ battle.enemies.splice(i, 1); continue; }
     if(e.slow > 0) e.slow -= dt;
+    if(e.spawnAnim > 0) e.spawnAnim = Math.max(0, e.spawnAnim - dt * 3);
     const sp = e.speed * (e.slow > 0 ? 0.55 : 1);
     e.d += sp * dt;
     if(e.d >= TOTAL_LEN){
-      battle.enemies.splice(i,1);
+      battle.enemies.splice(i, 1);
       battle.lives -= (e.type === 'tank' ? 2 : 1);
       battle.effects.push({ type:'boom', x:WP[WP.length-1].x, y:H-8, r:26, life:0.3, max:0.3, color:'#ff5c5c' });
+      spawnParticles(WP[WP.length-1].x, H-8, 10, '#ff5c5c', { speed: 130, life: 0.5, size: 3 });
+      addShake(0.35);
       updateHUD();
       if(battle.lives <= 0){ battle.lives = 0; updateHUD(); endBattle(false); return; }
       continue;
@@ -548,9 +562,9 @@ function update(dt){
     e.px = p.x; e.py = p.y;
   }
 
-  // --- башни ---
   for(const t of battle.towers){
     if(t.cd > 0) t.cd -= dt;
+    if(t.recoil > 0) t.recoil = Math.max(0, t.recoil - dt * 6);
     const st = towerStats(t.key);
     let best = null, bestD = -1;
     const r2 = st.range * st.range;
@@ -565,16 +579,23 @@ function update(dt){
     }
   }
 
-  // --- снаряды ---
-  for(let i=battle.projectiles.length-1;i>=0;i--){
+  for(let i = battle.projectiles.length - 1; i >= 0; i--){
     const p = battle.projectiles[i];
     if(p.target && p.target.hp > 0){ p.tx = p.target.px; p.ty = p.target.py; }
     const dx = p.tx - p.x, dy = p.ty - p.y;
     const dist = Math.hypot(dx, dy);
     const step = p.speed * dt;
+
+    if(!p.trail) p.trail = [];
+    p.trail.push({ x: p.x, y: p.y });
+    if(p.trail.length > 7) p.trail.shift();
+
     if(dist <= step || dist < 1){
       if(p.splash > 0){
         battle.effects.push({ type:'boom', x:p.tx, y:p.ty, r:p.splash, life:0.35, max:0.35, color:p.color });
+        spawnParticles(p.tx, p.ty, 16, p.color, { speed: 150, life: 0.5, size: 2.8 });
+        spawnParticles(p.tx, p.ty, 6, '#ffffff', { speed: 90, life: 0.3, size: 2 });
+        addShake(0.2);
         for(const e of battle.enemies){
           if(e.hp <= 0) continue;
           const ex = e.px - p.tx, ey = e.py - p.ty;
@@ -583,29 +604,43 @@ function update(dt){
       } else if(p.target && p.target.hp > 0){
         damageEnemy(p.target, p.dmg);
       }
-      battle.projectiles.splice(i,1);
+      battle.projectiles.splice(i, 1);
     } else {
       p.x += dx / dist * step;
       p.y += dy / dist * step;
     }
   }
 
-  // --- эффекты ---
-  for(let i=battle.effects.length-1;i>=0;i--){
+  for(let i = battle.effects.length - 1; i >= 0; i--){
     battle.effects[i].life -= dt;
-    if(battle.effects[i].life <= 0) battle.effects.splice(i,1);
+    if(battle.effects[i].life <= 0) battle.effects.splice(i, 1);
   }
 
-  // --- проверка конца волны ---
+  for(let i = battle.particles.length - 1; i >= 0; i--){
+    const p = battle.particles[i];
+    p.life -= dt;
+    if(p.life <= 0){ battle.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.vx *= 0.94;
+    p.vy *= 0.94;
+    p.vy += (p.gravity || 0) * dt;
+  }
+
+  if(battle.shake > 0){
+    battle.shake = Math.max(0, battle.shake - dt * 5);
+    const s = battle.shake * 9;
+    battle.shakeX = (Math.random() - 0.5) * s;
+    battle.shakeY = (Math.random() - 0.5) * s;
+  } else { battle.shakeX = 0; battle.shakeY = 0; }
+
   if(battle.state === 'wave' && battle.spawnQueue.length === 0 && battle.enemies.length === 0){
     if(battle.wave >= TOTAL_WAVES){ endBattle(true); }
     else { battle.state = 'prep'; updateHUD(); }
   }
 }
 
-/* =========================================================
-   РЕНДЕР
-   ========================================================= */
+/* ============ РЕНДЕР ============ */
 function drawBackground(t){
   const g = ctx.createLinearGradient(0,0,0,H);
   g.addColorStop(0,'#080e22');
@@ -660,16 +695,24 @@ function drawPath(){
 }
 
 function drawEnemy(e){
-  const rad = e.type === 'tank' ? 15 : e.type === 'fast' ? 8 : 11;
+  const baseR = e.type === 'tank' ? 15 : e.type === 'fast' ? 8 : 11;
+  const spawnK = e.spawnAnim || 0;
+  const rad = baseR * (1 - spawnK * 0.5);
+  const pulse = 1 + Math.sin(performance.now() / 180 + e.d * 0.1) * 0.06;
+
   ctx.save();
-  ctx.shadowBlur = 14;
+  ctx.shadowBlur = 18;
   ctx.shadowColor = e.color;
-  ctx.fillStyle = e.color;
-  ctx.beginPath(); ctx.arc(e.px, e.py, rad, 0, 6.3); ctx.fill();
+  const grad = ctx.createRadialGradient(e.px - rad*0.4, e.py - rad*0.4, 1, e.px, e.py, rad * pulse);
+  grad.addColorStop(0, '#ffffff');
+  grad.addColorStop(0.35, e.color);
+  grad.addColorStop(1, e.color);
+  ctx.fillStyle = grad;
+  ctx.beginPath(); ctx.arc(e.px, e.py, rad * pulse, 0, 6.3); ctx.fill();
   ctx.restore();
 
-  ctx.fillStyle = 'rgba(0,0,0,0.38)';
-  ctx.beginPath(); ctx.arc(e.px, e.py, rad * 0.55, 0, 6.3); ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.beginPath(); ctx.arc(e.px, e.py, rad * 0.5, 0, 6.3); ctx.fill();
 
   const w = rad * 2.3, h = 3.2;
   const pct = Math.max(0, e.hp / e.maxHp);
@@ -682,114 +725,181 @@ function drawEnemy(e){
 function drawTower(t){
   const def = TOWERS[t.key];
   const sel = battle && battle.selectedTower === t;
+  const lvl = state.towers[t.key].level;
 
   if(sel){
     const st = towerStats(t.key);
     ctx.beginPath();
     ctx.arc(t.x, t.y, st.range, 0, 6.3);
-    ctx.fillStyle = 'rgba(94,231,255,0.07)';
+    ctx.fillStyle = 'rgba(94,231,255,0.08)';
     ctx.fill();
-    ctx.strokeStyle = 'rgba(94,231,255,0.5)';
+    ctx.strokeStyle = 'rgba(94,231,255,0.55)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
   }
 
+  const recoil = t.recoil || 0;
+  const kick = recoil * 4;
+  const wob = Math.sin((performance.now() / 500) + t.x) * 0.06;
+
   ctx.save();
   ctx.translate(t.x, t.y);
-  ctx.rotate(t.angle || 0);
-
-  // ствол
-  ctx.fillStyle = def.color;
-  ctx.shadowBlur = 12;
+  ctx.rotate((t.angle || 0) + wob);
+  ctx.save();
+  ctx.translate(-kick, 0);
+  const bg = ctx.createLinearGradient(2, 0, 20, 0);
+  bg.addColorStop(0, def.color);
+  bg.addColorStop(1, '#ffffff');
+  ctx.fillStyle = bg;
+  ctx.shadowBlur = 14 + recoil * 10;
   ctx.shadowColor = def.color;
-  ctx.fillRect(2, -3.2, 17, 6.4);
+  ctx.fillRect(2, -3.5, 17, 7);
+  if(recoil > 0.3){
+    ctx.shadowBlur = 22;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath(); ctx.arc(20, 0, 3 + recoil * 3, 0, 6.3); ctx.fill();
+  }
+  ctx.restore();
   ctx.restore();
 
-  // база
+  const baseGrad = ctx.createRadialGradient(t.x - 4, t.y - 4, 2, t.x, t.y, 15);
+  baseGrad.addColorStop(0, '#1e2f55');
+  baseGrad.addColorStop(1, '#0a1226');
   ctx.beginPath(); ctx.arc(t.x, t.y, 13, 0, 6.3);
-  ctx.fillStyle = '#131f3a';
+  ctx.fillStyle = baseGrad;
   ctx.fill();
   ctx.strokeStyle = def.color;
   ctx.lineWidth = 2.5;
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = def.color;
   ctx.stroke();
+  ctx.shadowBlur = 0;
 
+  const coreGrad = ctx.createRadialGradient(t.x - 1.5, t.y - 1.5, 0.5, t.x, t.y, 6);
+  coreGrad.addColorStop(0, '#ffffff');
+  coreGrad.addColorStop(0.4, def.color);
+  coreGrad.addColorStop(1, def.color);
   ctx.beginPath(); ctx.arc(t.x, t.y, 5.5, 0, 6.3);
-  ctx.fillStyle = def.color;
+  ctx.fillStyle = coreGrad;
   ctx.fill();
 
-  // уровень
-  const lvl = state.towers[t.key].level;
   if(lvl > 1){
     ctx.fillStyle = '#ffd257';
     ctx.font = 'bold 9px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(lvl, t.x, t.y + 21);
+    ctx.fillText(lvl, t.x, t.y + 22);
   }
 }
 
 function render(t){
-  ctx.clearRect(0,0,W,H);
+  ctx.save();
+  if(battle) ctx.translate(battle.shakeX || 0, battle.shakeY || 0);
+
+  ctx.clearRect(-20, -20, W + 40, H + 40);
   drawBackground(t);
   drawPath();
 
-  if(!battle) return;
+  if(!battle){ ctx.restore(); return; }
 
-  // подсветка выбранной клетки
   if(battle.pendingCell){
     const { c, r } = battle.pendingCell;
-    ctx.fillStyle = 'rgba(94,231,255,0.16)';
+    ctx.fillStyle = 'rgba(94,231,255,0.18)';
     ctx.fillRect(c*CELL, r*CELL, CELL, CELL);
-    ctx.strokeStyle = 'rgba(94,231,255,0.8)';
+    ctx.strokeStyle = 'rgba(94,231,255,0.85)';
     ctx.lineWidth = 2;
     ctx.strokeRect(c*CELL+1, r*CELL+1, CELL-2, CELL-2);
+
+    const pulse = 0.5 + 0.5 * Math.sin(t * 6);
+    ctx.strokeStyle = `rgba(94,231,255,${0.4 + pulse * 0.5})`;
+    ctx.lineWidth = 3;
+    const pad = 4;
+    const x0 = c*CELL + pad, y0 = r*CELL + pad;
+    const x1 = (c+1)*CELL - pad, y1 = (r+1)*CELL - pad;
+    const L = 8;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0 + L); ctx.lineTo(x0, y0); ctx.lineTo(x0 + L, y0);
+    ctx.moveTo(x1 - L, y0); ctx.lineTo(x1, y0); ctx.lineTo(x1, y0 + L);
+    ctx.moveTo(x1, y1 - L); ctx.lineTo(x1, y1); ctx.lineTo(x1 - L, y1);
+    ctx.moveTo(x0 + L, y1); ctx.lineTo(x0, y1); ctx.lineTo(x0, y1 - L);
+    ctx.stroke();
   }
 
   for(const tw of battle.towers) drawTower(tw);
 
-  // снаряды
+  for(const p of battle.projectiles){
+    if(!p.trail) continue;
+    for(let i = 0; i < p.trail.length; i++){
+      const tr = p.trail[i];
+      const k = (i + 1) / p.trail.length;
+      ctx.globalAlpha = k * 0.5;
+      ctx.fillStyle = p.color;
+      const rr = (p.kind === 'orb' ? 6 : 3.5) * k;
+      ctx.beginPath(); ctx.arc(tr.x, tr.y, rr, 0, 6.3); ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
+
   for(const p of battle.projectiles){
     ctx.save();
-    ctx.shadowBlur = 14;
+    ctx.shadowBlur = 18;
     ctx.shadowColor = p.color;
-    ctx.fillStyle = p.color;
     const r = p.kind === 'orb' ? 6 : 3.5;
+    ctx.fillStyle = p.color;
     ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 6.3); ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath(); ctx.arc(p.x, p.y, r * 0.4, 0, 6.3); ctx.fill();
     ctx.restore();
   }
 
   for(const e of battle.enemies) drawEnemy(e);
 
-  // эффекты
   for(const ef of battle.effects){
     const k = ef.life / ef.max;
     if(ef.type === 'boom'){
       ctx.save();
-      ctx.globalAlpha = k * 0.8;
+      ctx.globalAlpha = k * 0.9;
       ctx.strokeStyle = ef.color;
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 3 + (1 - k) * 4;
       ctx.beginPath();
-      ctx.arc(ef.x, ef.y, ef.r * (1.15 - k * 0.85), 0, 6.3);
+      ctx.arc(ef.x, ef.y, ef.r * (1.3 - k * 0.9), 0, 6.3);
       ctx.stroke();
+      ctx.globalAlpha = k * 0.4;
+      ctx.fillStyle = ef.color;
+      ctx.beginPath(); ctx.arc(ef.x, ef.y, ef.r * (0.7 - k * 0.5), 0, 6.3); ctx.fill();
       ctx.restore();
     } else if(ef.type === 'beam'){
       ctx.save();
       ctx.globalAlpha = k;
       ctx.strokeStyle = ef.color;
-      ctx.lineWidth = 3.5;
-      ctx.shadowBlur = 14;
+      ctx.shadowBlur = 20;
       ctx.shadowColor = ef.color;
       ctx.beginPath();
-      ctx.moveTo(ef.x1, ef.y1);
-      ctx.lineTo(ef.x2, ef.y2);
+      ctx.moveTo(ef.x1, ef.y1); ctx.lineTo(ef.x2, ef.y2);
+      ctx.lineWidth = 7;
+      ctx.globalAlpha = k * 0.5;
+      ctx.stroke();
+      ctx.lineWidth = 3.5;
+      ctx.globalAlpha = k;
       ctx.stroke();
       ctx.restore();
     }
   }
+
+  for(const p of battle.particles){
+    const k = Math.max(0, p.life / (p.maxLife || 0.5));
+    ctx.globalAlpha = k;
+    ctx.shadowBlur = p.glow !== false ? 10 : 0;
+    ctx.shadowColor = p.color;
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.size * k, 0, 6.3); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.shadowBlur = 0;
+
+  ctx.restore();
 }
 
-/* =========================================================
-   ВЗАИМОДЕЙСТВИЕ С ПОЛЕМ
-   ========================================================= */
+/* ============ ВЗАИМОДЕЙСТВИЕ ============ */
 canvas.addEventListener('pointerdown', (ev) => {
   ev.preventDefault();
   if(!battle) return;
@@ -852,7 +962,7 @@ function buildTower(key){
     key, c, r,
     x: c * CELL + CELL / 2,
     y: r * CELL + CELL / 2,
-    cd: 0, angle: -Math.PI / 2
+    cd: 0, angle: -Math.PI / 2, recoil: 0
   });
   hidePickers();
   updateHUD();
@@ -895,9 +1005,7 @@ function selectTower(t){
   el.appendChild(close);
 }
 
-/* =========================================================
-   ЭКРАН СУНДУКОВ
-   ========================================================= */
+/* ============ СУНДУКИ ============ */
 function renderChests(){
   const el = document.getElementById('chestList');
   el.innerHTML = '';
@@ -976,9 +1084,7 @@ function showChestRewards(res, d){
   };
 }
 
-/* =========================================================
-   ЭКРАН БАШЕН
-   ========================================================= */
+/* ============ БАШНИ ============ */
 function renderCollection(){
   const el = document.getElementById('collectionList');
   el.innerHTML = '';
@@ -1012,9 +1118,7 @@ function renderCollection(){
   }
 }
 
-/* =========================================================
-   ГЛАВНЫЙ ЦИКЛ
-   ========================================================= */
+/* ============ ГЛАВНЫЙ ЦИКЛ ============ */
 function loop(now){
   const dt = Math.min((now - lastTime) / 1000, 0.05);
   lastTime = now;
@@ -1027,9 +1131,7 @@ function loop(now){
 }
 requestAnimationFrame(loop);
 
-/* =========================================================
-   СТАРТ
-   ========================================================= */
+/* ============ СТАРТ ============ */
 refreshMenu();
 showScreen('menu');
 </script>
